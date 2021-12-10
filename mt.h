@@ -1,15 +1,15 @@
 struct carreau
 {
-    char value;
-    struct carreau *prev;
-    struct carreau *next;
+    char valeur;
+    struct carreau *prec;
+    struct carreau *suiv;
 };
 typedef struct carreau* CARREAU;
 
 struct bandeau
 {
-    CARREAU first;
-    CARREAU last;
+    CARREAU premier;
+    CARREAU dernier;
 };
 typedef struct bandeau * BANDEAU;
 
@@ -24,3 +24,5 @@ typedef struct mt
 } MT;
 
 void init(BANDEAU b);
+int init_ruban(char * nomfic, char* entree);
+int ajout_elem(BANDEAU b, char elem);
