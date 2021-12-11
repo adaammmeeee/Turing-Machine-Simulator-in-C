@@ -37,19 +37,6 @@ int ajout_elem(BANDEAU b, char elem)
     return 0;
 }
 
-void ignore_commentaire(FILE *F)
-{
-    int a = 0;
-    a = fgetc(F);
-    if (a == '#')
-    {
-        while (fgetc(F) != '\n')
-        {
-        }
-    }
-    else
-        fseek(F, -1, SEEK_SET);
-}
 
 MT init_ruban(char *nomfic, char *entree)
 {
@@ -61,23 +48,24 @@ MT init_ruban(char *nomfic, char *entree)
         perror("fopen");
         exit(1);
     }
-    
-    ma_machine.nom = malloc(20*sizeof(char));
-    ma_machine.etat_init = malloc(10*sizeof(char));
 
-    ignore_commentaire(F);
-    fscanf(F, "name: %[^#\n]", ma_machine.nom);
-    fscanf(F, "init:  %[^#\n]", ma_machine.etat_init);
-    
-    
+    ma_machine.nom = malloc(20 * sizeof(char));
+    ma_machine.etat_init = malloc(10 * sizeof(char));
+    ma_machine.etat_accepte = malloc(10 * sizeof(char));
+
+    fscanf(F, "name:%[^\n]", ma_machine.nom);
+    fscanf(F, "init:%[^\n]", ma_machine.etat_init);
+    fscanf(F, "accept:%[^\n]", ma_machine.etat_accepte);
+    printf("%s\n", ma_machine.nom);
+    printf("%s\n", ma_machine.etat_init);
+    // printf("%s\n",ma_machine.etat_accepte);
     fclose(F);
 
     return ma_machine;
 }
 
-
-void libere_machine(MT ma_machine){
+void libere_machine(MT ma_machine)
+{
     free(ma_machine.nom);
     free(ma_machine.etat_init);
-   
 }

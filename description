@@ -1,4 +1,3 @@
-#--- Configuration
-name:     [name_of_machine] #Le nom de la machine
-init: A
+name:[name_of_machine]
+init: AB
 accept: [accept_state]
