@@ -7,6 +7,7 @@ int main()
     printf("Bonjour le monde\n");
     BANDEAU b = malloc(sizeof(struct bandeau));
     init(b);
-    init_ruban("description","0101011");
+    MT ma_machine = init_ruban("description", "0101011");
+    libere_machine(ma_machine);
     free(b);
 }

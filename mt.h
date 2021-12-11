@@ -16,13 +16,15 @@ typedef struct bandeau * BANDEAU;
 typedef struct mt
 {
     BANDEAU etat_bande;
-    char etat_courant;
-    char etat_accepte;
-    char etat_init;
+    char* etat_courant;
+    char* etat_accepte;
+    char* etat_init;
     int position_tete_lecture;
     char *nom;
 } MT;
 
 void init(BANDEAU b);
-int init_ruban(char * nomfic, char* entree);
+MT init_ruban(char * nomfic, char* entree);
 int ajout_elem(BANDEAU b, char elem);
+void ignore_commentaire(FILE * f);
+void libere_machine(MT ma_machine);

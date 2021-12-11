@@ -2,7 +2,7 @@ run: compile
 	./main
 
 debug: compile
-	valgrind ./main
+	valgrind --leak-check=full ./main
 
 mt.o: mt.c mt.h
 	gcc -Wall -g -c mt.c

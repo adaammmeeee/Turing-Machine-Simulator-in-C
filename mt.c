@@ -37,20 +37,47 @@ int ajout_elem(BANDEAU b, char elem)
     return 0;
 }
 
-int init_ruban(char *nomfic, char *entree)
+void ignore_commentaire(FILE *F)
 {
+    int a = 0;
+    a = fgetc(F);
+    if (a == '#')
+    {
+        while (fgetc(F) != '\n')
+        {
+        }
+    }
+    else
+        fseek(F, -1, SEEK_SET);
+}
+
+MT init_ruban(char *nomfic, char *entree)
+{
+    MT ma_machine;
+
     FILE *F = fopen(nomfic, "r");
     if (!F)
     {
         perror("fopen");
         exit(1);
     }
-    char nom[20];
+    
+    ma_machine.nom = malloc(20*sizeof(char));
+    ma_machine.etat_init = malloc(10*sizeof(char));
 
-    fscanf(F, "name: %[^\n]", nom);
-
-    printf("%s\n", nom);
+    ignore_commentaire(F);
+    fscanf(F, "name: %[^#\n]", ma_machine.nom);
+    fscanf(F, "init:  %[^#\n]", ma_machine.etat_init);
+    
+    
     fclose(F);
 
-    return 0;
+    return ma_machine;
+}
+
+
+void libere_machine(MT ma_machine){
+    free(ma_machine.nom);
+    free(ma_machine.etat_init);
+   
 }

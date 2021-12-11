@@ -1,1 +1,4 @@
-name: [name_of_machine]
+#--- Configuration
+name:     [name_of_machine] #Le nom de la machine
+init: A
+accept: [accept_state]
