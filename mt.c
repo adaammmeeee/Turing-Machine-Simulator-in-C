@@ -43,26 +43,31 @@ int recupere_transition(FILE *F)
     int caractere = 0;
     caractere = fgetc(F);
     int retour_ligne = 0; // booléen
-    
+
     // Dans un premier temps on cherche l'état
     while (isspace(caractere))
     {
-        if (caractere == '\n') {
+        if (caractere == '\n')
+        {
             retour_ligne = 1;
         }
         caractere = fgetc(F);
     }
-    if (!retour_ligne) {
+    if (!retour_ligne)
+    {
         printf("pas de retour à la ligne\n");
-        return 10; 
+        return 10;
     }
     if (!isupper(caractere))
     {
-        return 1; // Erreur, lettre majuscule attendue
+        printf("Lettre majuscule attendue\n");
+
+        return 1;
     }
     printf("%c\n", caractere);
+
     //--------------------------------------
-    
+
     // On cherche la virgule maintenant
     caractere = fgetc(F);
     while (caractere == ' ')
@@ -71,6 +76,7 @@ int recupere_transition(FILE *F)
     }
     if (caractere != ',')
     {
+        printf("virgule attendu\n");
         return 2;
     }
     printf("%c\n", caractere);
@@ -80,32 +86,87 @@ int recupere_transition(FILE *F)
     {
         caractere = fgetc(F);
     }
-    if (caractere != '0' && caractere != '1')
+    if (caractere != '0' && caractere != '1' && caractere != '_')
     {
+        printf("0, 1 ou _ (alphabet de travail) attendu");
+
         return 3;
     }
     printf("%c\n", caractere);
 
-    
-    // Maintenant retour à la ligne et on cherche le premier caractère
+    // Maintenant retour à la ligne et on cherche le nouvel état
     caractere = fgetc(F);
     retour_ligne = 0;
     while (isspace(caractere))
     {
-           if (caractere == '\n') {
+        if (caractere == '\n')
+        {
             retour_ligne = 1;
         }
         caractere = fgetc(F);
     }
-    
-    if (!retour_ligne) {
+
+    if (!retour_ligne)
+    {
         printf("pas de retour à la ligne\n");
-        return 10; 
+        return 10;
     }
- 
+
     if (!isupper(caractere))
     {
         return 1;
+    }
+    printf("%c\n", caractere);
+    // On cherche la virgule maintenant
+    caractere = fgetc(F);
+    while (caractere == ' ')
+    {
+        caractere = fgetc(F);
+    }
+    if (caractere != ',')
+    {
+        printf("virgule attendu\n");
+        return 2;
+    }
+    printf("%c\n", caractere);
+
+    // Maintenant on cherche le caractère qui remplacera
+    caractere = fgetc(F);
+    while (caractere == ' ')
+    {
+        caractere = fgetc(F);
+    }
+    if (caractere != '0' && caractere != '1' && caractere != '_')
+    {
+        printf("0, 1 ou _ (alphabet de travail) attendu \n");
+        return 3;
+    }
+    printf("%c\n", caractere);
+
+    // On cherche la virgule maintenant
+    caractere = fgetc(F);
+    while (caractere == ' ')
+    {
+        caractere = fgetc(F);
+    }
+    if (caractere != ',')
+    {
+        printf("virgule attendu\n");
+        return 2;
+    }
+    printf("%c\n", caractere);
+
+    // Dans quel direction on parcours la bande
+    caractere = fgetc(F);
+    while (caractere == ' ')
+    {
+        caractere = fgetc(F);
+    }
+
+    if (caractere != '>' && caractere != '<' && caractere != '-')
+    {
+        printf(">, < ou - attendu \n");
+        return 4;
     }
     printf("%c\n", caractere);
     return 0;
