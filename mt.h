@@ -23,8 +23,18 @@ typedef struct mt
     char *nom;
 } MT;
 
+typedef struct transition
+{
+    char etat_lu;
+    int caractere_lu;
+    char nouvelle_etat;
+    int nouveau_caractere;
+    char direction;
+} T;
+
 void init(BANDEAU b);
 MT init_ruban(char * nomfic, char* entree);
 int ajout_elem(BANDEAU b, char elem);
 void ignore_commentaire(FILE * f);
 void libere_machine(MT ma_machine);
+int recupere_transition(FILE * f);
