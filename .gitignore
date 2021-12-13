@@ -1,0 +1,5 @@
+
+.vscode/targets.log
+.vscode/configurationCache.log
+*.log
+.vscode/settings.json

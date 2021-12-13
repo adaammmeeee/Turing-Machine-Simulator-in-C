@@ -2,5 +2,9 @@ name:[name_of_machine]
 init: AB
 accept:[accept_state]
 
-A , 0    
-B,0,>
+
+
+ A  ,   0
+
+
+   A , 0 ,>

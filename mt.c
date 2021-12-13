@@ -42,22 +42,30 @@ int recupere_transition(FILE *F)
 {
     int caractere = 0;
     caractere = fgetc(F);
+    int retour_ligne = 0; // booléen
     
     // Dans un premier temps on cherche l'état
-    while ( isspace(caractere))
+    while (isspace(caractere))
     {
+        if (caractere == '\n') {
+            retour_ligne = 1;
+        }
         caractere = fgetc(F);
+    }
+    if (!retour_ligne) {
+        printf("pas de retour à la ligne\n");
+        return 10; 
     }
     if (!isupper(caractere))
     {
-        return 1;
+        return 1; // Erreur, lettre majuscule attendue
     }
     printf("%c\n", caractere);
     //--------------------------------------
     
     // On cherche la virgule maintenant
     caractere = fgetc(F);
-    while (isspace(caractere))
+    while (caractere == ' ')
     {
         caractere = fgetc(F);
     }
@@ -68,7 +76,7 @@ int recupere_transition(FILE *F)
     printf("%c\n", caractere);
     // Maintenant on cherche le caractère actuel
     caractere = fgetc(F);
-    while (isspace(caractere))
+    while (caractere == ' ')
     {
         caractere = fgetc(F);
     }
@@ -77,25 +85,24 @@ int recupere_transition(FILE *F)
         return 3;
     }
     printf("%c\n", caractere);
-    // Maintenant retour à la ligne
+
+    
+    // Maintenant retour à la ligne et on cherche le premier caractère
     caractere = fgetc(F);
+    retour_ligne = 0;
     while (isspace(caractere))
     {
+           if (caractere == '\n') {
+            retour_ligne = 1;
+        }
         caractere = fgetc(F);
     }
-    printf("%c\n", caractere);
-
-    if (caractere != '\n')
-    {
-        return 4;
+    
+    if (!retour_ligne) {
+        printf("pas de retour à la ligne\n");
+        return 10; 
     }
-    caractere = fgetc(F);
-
-    // On est bien à la ligne on cherche la prochaine majuscule
-    while (caractere == '\n' || isspace(caractere))
-    {
-        caractere = fgetc(F);
-    }
+ 
     if (!isupper(caractere))
     {
         return 1;
@@ -121,7 +128,7 @@ MT init_ruban(char *nomfic, char *entree)
 
     fscanf(F, "name: %[^\n]\n", ma_machine.nom);
     fscanf(F, "init: %[^\n]\n", ma_machine.etat_init);
-    fscanf(F, "accept: %[^\n]\n", ma_machine.etat_accepte);
+    fscanf(F, "accept: %[^\n]", ma_machine.etat_accepte);
     printf("%s\n", ma_machine.nom);
     printf("%s\n", ma_machine.etat_init);
     printf("%s\n", ma_machine.etat_accepte);
