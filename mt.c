@@ -178,89 +178,94 @@ T *recup_transition(FILE *F, int nb_transitions)
     for (int i = 0; i < nb_transitions; i++)
     {
         int caractere = fgetc(F);
-        
+
         while (!isupper(caractere))
         {
             caractere = fgetc(F);
         }
         tab_transition[i].etat_lu = caractere;
-        
+
         while (!isdigit(caractere))
         {
             caractere = fgetc(F);
         }
         tab_transition[i].caractere_lu = caractere;
-        
+
         while (!isupper(caractere))
         {
             caractere = fgetc(F);
         }
         tab_transition[i].nouvel_etat = caractere;
-        
+
         while (!isdigit(caractere))
         {
             caractere = fgetc(F);
         }
         tab_transition[i].nouveau_caractere = caractere;
 
-        while (caractere != '<' && caractere != '>' && caractere != '-' )
+        while (caractere != '<' && caractere != '>' && caractere != '-')
         {
             caractere = fgetc(F);
         }
         tab_transition[i].direction = caractere;
-
     }
     return tab_transition;
 }
 
-    MT init_ruban(char *nomfic, char *entree)
+void affiche_transition(T* tab_transition, int nb_transitions) {
+    for (int i = 0; i < nb_transitions; i++) {
+        printf("%c, %d \n", tab_transition[i].etat_lu, tab_transition[i].caractere_lu);
+        printf("%c, %d, %c \n", tab_transition[i].nouvel_etat, tab_transition[i].nouveau_caractere, tab_transition[i].direction );
+    }
+}
+
+MT init_ruban(char *nomfic, char *entree)
+{
+    MT ma_machine = malloc(sizeof(struct mt));
+
+    FILE *F = fopen(nomfic, "r");
+    if (!F)
     {
-        MT ma_machine = malloc(sizeof(struct mt));
-
-        FILE *F = fopen(nomfic, "r");
-        if (!F)
-        {
-            perror("fopen");
-            exit(1);
-        }
-
-        ma_machine->nom = malloc(20 * sizeof(char));
-        ma_machine->etat_init = malloc(20 * sizeof(char));
-        ma_machine->etat_accepte = malloc(20 * sizeof(char));
-
-        fscanf(F, "name: %[^\n]\n", ma_machine->nom);
-        fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
-        fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
-        
-        long position = ftell(F);
-        int nb_ligne = 3;
-        
-        int retour = test_transition(F, &nb_ligne);
-        int nb_transitions = 0;
-        while (!retour)
-        {
-            nb_transitions++;
-            retour = test_transition(F, &nb_ligne);
-        }
-        if (retour != 5) // Si on n'a pas atteint la fin du fichier
-        {
-            return NULL;
-        }
-        fseek(F,position,SEEK_SET);
-        
-       
-        ma_machine->tab_transitions =  recup_transition(F,nb_transitions);
-        
-        fclose(F);
-
-        return ma_machine;
+        perror("fopen");
+        exit(1);
     }
 
-    void libere_machine(MT ma_machine)
+    ma_machine->nom = malloc(20 * sizeof(char));
+    ma_machine->etat_init = malloc(20 * sizeof(char));
+    ma_machine->etat_accepte = malloc(20 * sizeof(char));
+
+    fscanf(F, "name: %[^\n]\n", ma_machine->nom);
+    fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
+    fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
+
+    long position = ftell(F);
+    int nb_ligne = 3;
+
+    int retour = test_transition(F, &nb_ligne);
+    int nb_transitions = 0;
+    while (!retour)
     {
-        free(ma_machine->nom);
-        free(ma_machine->etat_init);
-        free(ma_machine->etat_accepte);
-        free(ma_machine->tab_transitions);
-        free(ma_machine);
+        nb_transitions++;
+        retour = test_transition(F, &nb_ligne);
     }
+    if (retour != 5) // Si on n'a pas atteint la fin du fichier
+    {
+        return NULL;
+    }
+    fseek(F, position, SEEK_SET);
+
+    ma_machine->tab_transitions = recup_transition(F, nb_transitions);
+    affiche_transition(ma_machine->tab_transitions, nb_transitions);
+    fclose(F);
+
+    return ma_machine;
+}
+
+void libere_machine(MT ma_machine)
+{
+    free(ma_machine->nom);
+    free(ma_machine->etat_init);
+    free(ma_machine->etat_accepte);
+    free(ma_machine->tab_transitions);
+    free(ma_machine);
+}
