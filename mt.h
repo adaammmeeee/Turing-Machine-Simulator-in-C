@@ -37,4 +37,4 @@ MT init_ruban(char * nomfic, char* entree);
 int ajout_elem(BANDEAU b, char elem);
 void ignore_commentaire(FILE * f);
 void libere_machine(MT ma_machine);
-int recupere_transition(FILE * f);
+int recupere_transition(FILE * f, int * nombre_de_ligne);
