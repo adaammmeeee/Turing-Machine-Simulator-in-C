@@ -13,7 +13,16 @@ struct bandeau
 };
 typedef struct bandeau * BANDEAU;
 
-typedef struct mt
+typedef struct transition
+{
+    char etat_lu;
+    int caractere_lu;
+    char nouvel_etat;
+    int nouveau_caractere;
+    char direction;
+} T;
+
+struct mt 
 {
     BANDEAU etat_bande;
     char* etat_courant;
@@ -21,20 +30,16 @@ typedef struct mt
     char* etat_init;
     int position_tete_lecture;
     char *nom;
-} MT;
+    T* tab_transitions;
+};
+typedef struct mt * MT;
 
-typedef struct transition
-{
-    char etat_lu;
-    int caractere_lu;
-    char nouvelle_etat;
-    int nouveau_caractere;
-    char direction;
-} T;
+
 
 void init(BANDEAU b);
 MT init_ruban(char * nomfic, char* entree);
 int ajout_elem(BANDEAU b, char elem);
 void ignore_commentaire(FILE * f);
 void libere_machine(MT ma_machine);
-int recupere_transition(FILE * f, int * nombre_de_ligne);
+int test_transition(FILE * f, int * nombre_de_ligne);
+T* recup_transition(FILE * f, int nb_transitions);

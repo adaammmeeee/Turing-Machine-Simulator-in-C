@@ -38,11 +38,11 @@ int ajout_elem(BANDEAU b, char elem)
     return 0;
 }
 
-int recupere_transition(FILE *F, int* nombre_de_ligne)
+int test_transition(FILE *F, int *nombre_de_ligne)
 {
     int caractere = 0;
     caractere = fgetc(F);
-    int retour_ligne = 0; 
+    int retour_ligne = 0;
 
     // Dans un premier temps on cherche l'état
     while (isspace(caractere))
@@ -54,7 +54,8 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
         }
         caractere = fgetc(F);
     }
-    if (caractere == EOF) {
+    if (caractere == EOF)
+    {
         printf("Fin des transitions\n");
         return 5;
     }
@@ -69,11 +70,8 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
 
         return 1;
     }
-    printf("%c\n", caractere);
 
-    //--------------------------------------
-
-    // On cherche la virgule maintenant
+    // On cherche la virgule
     caractere = fgetc(F);
     while (caractere == ' ')
     {
@@ -84,7 +82,7 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
         printf("virgule attendu à la ligne %d\n", *nombre_de_ligne);
         return 2;
     }
-    printf("%c\n", caractere);
+
     // Maintenant on cherche le caractère actuel
     caractere = fgetc(F);
     while (caractere == ' ')
@@ -97,7 +95,6 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
 
         return 3;
     }
-    printf("%c\n", caractere);
 
     // Maintenant retour à la ligne et on cherche le nouvel état
     caractere = fgetc(F);
@@ -114,7 +111,7 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
 
     if (!retour_ligne)
     {
-         printf("retour à la ligne attendu à la fin de la ligne %d\n", *nombre_de_ligne);
+        printf("retour à la ligne attendu à la fin de la ligne %d\n", *nombre_de_ligne);
         return 10;
     }
 
@@ -122,7 +119,7 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
     {
         return 1;
     }
-    printf("%c\n", caractere);
+
     // On cherche la virgule maintenant
     caractere = fgetc(F);
     while (caractere == ' ')
@@ -134,7 +131,6 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
         printf("virgule attendu à la ligne %d\n", *nombre_de_ligne);
         return 2;
     }
-    printf("%c\n", caractere);
 
     // Maintenant on cherche le caractère qui remplacera
     caractere = fgetc(F);
@@ -147,7 +143,6 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
         printf("0, 1 ou _ (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
         return 3;
     }
-    printf("%c\n", caractere);
 
     // On cherche la virgule maintenant
     caractere = fgetc(F);
@@ -160,7 +155,6 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
         printf("virgule attendu à la ligne %d\n", *nombre_de_ligne);
         return 2;
     }
-    printf("%c\n", caractere);
 
     // Dans quel direction on parcours la bande
     caractere = fgetc(F);
@@ -174,45 +168,99 @@ int recupere_transition(FILE *F, int* nombre_de_ligne)
         printf(">, < ou - attendu à la ligne %d\n", *nombre_de_ligne);
         return 4;
     }
-    printf("%c\n", caractere);
-   
+
     return 0;
 }
 
-MT init_ruban(char *nomfic, char *entree)
+T *recup_transition(FILE *F, int nb_transitions)
 {
-    MT ma_machine;
-
-    FILE *F = fopen(nomfic, "r");
-    if (!F)
+    T *tab_transition = malloc(nb_transitions * (sizeof(struct transition)));
+    for (int i = 0; i < nb_transitions; i++)
     {
-        perror("fopen");
-        exit(1);
+        int caractere = fgetc(F);
+        
+        while (!isupper(caractere))
+        {
+            caractere = fgetc(F);
+        }
+        tab_transition[i].etat_lu = caractere;
+        
+        while (!isdigit(caractere))
+        {
+            caractere = fgetc(F);
+        }
+        tab_transition[i].caractere_lu = caractere;
+        
+        while (!isupper(caractere))
+        {
+            caractere = fgetc(F);
+        }
+        tab_transition[i].nouvel_etat = caractere;
+        
+        while (!isdigit(caractere))
+        {
+            caractere = fgetc(F);
+        }
+        tab_transition[i].nouveau_caractere = caractere;
+
+        while (caractere != '<' && caractere != '>' && caractere != '-' )
+        {
+            caractere = fgetc(F);
+        }
+        tab_transition[i].direction = caractere;
+
     }
-
-    ma_machine.nom = malloc(20 * sizeof(char));
-    ma_machine.etat_init = malloc(20 * sizeof(char));
-    ma_machine.etat_accepte = malloc(20 * sizeof(char));
-
-    fscanf(F, "name: %[^\n]\n", ma_machine.nom);
-    fscanf(F, "init: %[^\n]\n", ma_machine.etat_init);
-    fscanf(F, "accept: %[^\n]", ma_machine.etat_accepte);
-    int retour = 0;
-    int nb_ligne = 3;
-    retour = recupere_transition(F, &nb_ligne);
-    if (retour) {
-        printf("Problème lors de la lecture du fichier, Erreur n°%d\n", retour);
-
-    }
-    recupere_transition(F, &nb_ligne);
-    fclose(F);
-
-    return ma_machine;
+    return tab_transition;
 }
 
-void libere_machine(MT ma_machine)
-{
-    free(ma_machine.nom);
-    free(ma_machine.etat_init);
-    free(ma_machine.etat_accepte);
-}
+    MT init_ruban(char *nomfic, char *entree)
+    {
+        MT ma_machine = malloc(sizeof(struct mt));
+
+        FILE *F = fopen(nomfic, "r");
+        if (!F)
+        {
+            perror("fopen");
+            exit(1);
+        }
+
+        ma_machine->nom = malloc(20 * sizeof(char));
+        ma_machine->etat_init = malloc(20 * sizeof(char));
+        ma_machine->etat_accepte = malloc(20 * sizeof(char));
+
+        fscanf(F, "name: %[^\n]\n", ma_machine->nom);
+        fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
+        fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
+        
+        long position = ftell(F);
+        int nb_ligne = 3;
+        
+        int retour = test_transition(F, &nb_ligne);
+        int nb_transitions = 0;
+        while (!retour)
+        {
+            nb_transitions++;
+            retour = test_transition(F, &nb_ligne);
+        }
+        if (retour != 5) // Si on n'a pas atteint la fin du fichier
+        {
+            return NULL;
+        }
+        fseek(F,position,SEEK_SET);
+        
+       
+        ma_machine->tab_transitions =  recup_transition(F,nb_transitions);
+        
+        fclose(F);
+
+        return ma_machine;
+    }
+
+    void libere_machine(MT ma_machine)
+    {
+        free(ma_machine->nom);
+        free(ma_machine->etat_init);
+        free(ma_machine->etat_accepte);
+        free(ma_machine->tab_transitions);
+        free(ma_machine);
+    }
