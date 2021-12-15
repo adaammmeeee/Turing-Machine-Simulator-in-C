@@ -57,14 +57,14 @@ int test_transition(FILE *F, int *nombre_de_ligne)
     }
     if (caractere == EOF)
     {
-        printf("Fin des transitions\n");
+        printf("Fin de la lecture des transitions\n");
         return 5;
     }
     if (!retour_ligne)
     {
         printf("retour à la ligne attendu à la fin de la ligne %d\n", *nombre_de_ligne);
         return 10;
-    }
+    } 
     if (!isupper(caractere))
     {
         printf("Lettre majuscule attendue à la ligne %d\n", *nombre_de_ligne);
@@ -300,7 +300,7 @@ MT init_machine(char *nomfic, char *entree)
     printf("Etat courant : %c\n", ma_machine->etat_courant);
     ma_machine->position_tete_lecture = 0;
     ma_machine->nb_transitions = nb_transitions;
-    affiche_transition(ma_machine->tab_transitions, nb_transitions);
+    //affiche_transition(ma_machine->tab_transitions, nb_transitions);
     fclose(F);
     return ma_machine;
 }
@@ -361,7 +361,8 @@ int calcul_pas(MT ma_machine, CARREAU tete_lecture)
             printf("Erreur dans les transitions, mauvais symboles de directions.\n");
             return 2;
         }
-        printf("Premier pas \n");
+        printf("\n\n");
+        printf("Pas \n");
         affiche_bandeau(ma_machine->etat_bande);
         printf("Position de la tête de lecture : %d\n", ma_machine->position_tete_lecture + 1);
         printf("Etat courant : %c\n", ma_machine->etat_courant);
