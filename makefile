@@ -1,5 +1,5 @@
 run: compile
-	./main
+	time ./main
 
 debug: compile
 	valgrind --leak-check=full ./main

@@ -6,11 +6,17 @@ int main()
 {
     BANDEAU b = malloc(sizeof(struct bandeau));
     init(b);
-    MT ma_machine = init_ruban("description", "0101011");
-    if (ma_machine == NULL) {
+    MT ma_machine = init_machine("description", "101010110");
+    if (ma_machine == NULL)
+    {
         printf("Erreur lors de l'initialisation de la machine \n");
+        free(b);
         return 1;
     }
+    affiche_bandeau(ma_machine->etat_bande);
+    CARREAU tete_lecture = ma_machine->etat_bande->premier;
+    calcul_pas(ma_machine, tete_lecture);
+    
     libere_machine(ma_machine);
     free(b);
     return 0;

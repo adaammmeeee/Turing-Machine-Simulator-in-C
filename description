@@ -1,15 +1,27 @@
 name: Machine de Adame
 init: A
-accept: Z
+accept: F
 
 
 
-B , 0
-A , 0 ,>
+A,1
+D , 1 , >
 
+A , 0
+D , 0, >
 
-A  ,  0
-A , 0 , >
+D,1
+D,1,>
 
-C,1
-C,0,>
+D,0
+D,0,>
+
+D,_
+T,_,<
+
+T,1
+R,1,-
+
+T,0
+F,0,-
+
