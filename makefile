@@ -10,5 +10,11 @@ mt.o: mt.c mt.h
 main.o: main.c
 	gcc -Wall -g -c main.c
 
-compile: main.o mt.o
-	gcc -Wall -o main main.o mt.o
+fonctionnement.o: fonctionnement.c mt.h
+	gcc -Wall -g -c fonctionnement.c
+
+affichage.o : affichage.c mt.h
+	gcc -Wall -g -c affichage.c
+
+compile: main.o mt.o fonctionnement.o affichage.o
+	gcc -Wall -o main main.o mt.o fonctionnement.o affichage.o
