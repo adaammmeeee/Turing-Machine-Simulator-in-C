@@ -8,7 +8,7 @@ int calcul_pas(MT ma_machine, CARREAU tete_lecture)
 {
 
     ///////////////////////
-
+    sleep(1);
     printf("\e[1;1H\e[2J");
     if (ma_machine->position_tete_lecture == 0)
     {

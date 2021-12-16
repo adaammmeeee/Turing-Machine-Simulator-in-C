@@ -186,12 +186,15 @@ T *recup_transition(FILE *F, int nb_transitions)
         {
             caractere = fgetc(F);
         }
+        
         tab_transition[i].etat_lu[0] = caractere;
+        
+        
         tab_transition[i].etat_lu[1] = '\0';
 
         caractere = fgetc(F);
 
-        while (!(isdigit(caractere) || isalpha(caractere) || caractere == '_'))
+        while (! (isdigit(caractere) || isalpha(caractere) || caractere == '_') )
         {
             caractere = fgetc(F);
         }
@@ -245,6 +248,10 @@ MT init_machine(char *nomfic, char *entree)
     fscanf(F, "name: %[^\n]\n", ma_machine->nom);
     fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
     fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
+    printf(" VOICI LA TAILLE %ld\n", strlen(ma_machine->etat_init));
+    ma_machine->etat_accepte[strlen(ma_machine->etat_accepte)-1] = '\0';
+    ma_machine->etat_init[strlen(ma_machine->etat_init)-1] = '\0';
+
     long position = ftell(F);
     rewind(F);
     int nb_ligne = 1;
@@ -282,8 +289,7 @@ MT init_machine(char *nomfic, char *entree)
         ajout_elem(b, entree[i]);
     }
     ma_machine->etat_bande = b;
-    ma_machine->etat_courant[0] = 'A';
-    ma_machine->etat_courant[1] = '\0';
+    strcpy(ma_machine->etat_courant, ma_machine->etat_init);
     printf("Etat courant: %s\n", ma_machine->etat_courant);
     ma_machine->position_tete_lecture = 0;
     ma_machine->nb_transitions = nb_transitions;
