@@ -35,16 +35,20 @@ int calcul_pas(MT ma_machine, CARREAU tete_lecture)
 
     ///////////////////////
 
+    int i = 0;
     int j = 0;
     int cpt = 0;
-    for (int i = 0; i < ma_machine->nb_transitions; i++)
+    TRANSI actuelle = ma_machine->liste_transitions->premier;
+
+    while (actuelle)
     {
-        // printf("%c   %c \n", ma_machine->tab_transitions[i].etat_lu, ma_machine->tab_transitions[i].caractere_lu);
-        if ((!strcmp(ma_machine->tab_transitions[i].etat_lu, ma_machine->etat_courant)) && (ma_machine->tab_transitions[i].caractere_lu == tete_lecture->valeur))
+        if ((!strcmp(actuelle->ma_transition.etat_lu, ma_machine->etat_courant)) && (actuelle->ma_transition.caractere_lu == tete_lecture->valeur))
         {
             j = i;
             cpt++;
         }
+        actuelle = actuelle->suiv;
+        i++;
     }
 
     if (cpt > 1)
@@ -52,13 +56,19 @@ int calcul_pas(MT ma_machine, CARREAU tete_lecture)
         printf("Erreur, ambiguité dans vos transitions \n");
         return 1;
     }
-
+    
+    actuelle = ma_machine->liste_transitions->premier;
     if (cpt == 1)
     {
-        strcpy(ma_machine->etat_courant, ma_machine->tab_transitions[j].nouvel_etat);
-        tete_lecture->valeur = ma_machine->tab_transitions[j].nouveau_caractere;
+        for (int i = 0; i < j; i++)
+        {
+            actuelle = actuelle->suiv;
+        }
 
-        switch (ma_machine->tab_transitions[j].direction)
+        strcpy(ma_machine->etat_courant, actuelle->ma_transition.nouvel_etat);
+        tete_lecture->valeur = actuelle->ma_transition.nouveau_caractere;
+
+        switch (actuelle->ma_transition.direction)
         {
         case '>':
             if (tete_lecture == ma_machine->etat_bande->dernier)

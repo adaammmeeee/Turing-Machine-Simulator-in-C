@@ -16,5 +16,11 @@ fonctionnement.o: fonctionnement.c mt.h
 affichage.o : affichage.c mt.h
 	gcc -Wall -g -c affichage.c
 
-compile: main.o mt.o fonctionnement.o affichage.o
-	gcc -Wall -o main main.o mt.o fonctionnement.o affichage.o
+liste.o: liste.c mt.h
+	gcc -Wall -g -c liste.c
+
+compile: main.o mt.o fonctionnement.o affichage.o liste.o
+	gcc -Wall -o main main.o mt.o fonctionnement.o affichage.o liste.o
+
+clean: 
+	rm -f *.o main

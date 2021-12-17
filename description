@@ -1,27 +1,97 @@
-name: Machine de Adame
-init:A
-accept: F
+name: Binary palindrome
+init: Q0
+accept: QAccept
+
+Q0  ,   0
+QRight0   ,_,>
 
 
+Q0  ,   0
+QRight0   ,_,>
 
-A,1
-D , 1 , >
+QRight0,0
+QRight0,0,>
 
-A , 0
-D , 0, >
+QRight0,1
+QRight0,1,>
 
-D,1
-D,1,>
+Q0,1
+QRight1,_,>
 
-D,0
-D,0,>
+QRight1,0
+QRight1,0,>
 
-D,_
-T,_,<
+QRight1,1
+QRight1,1,>
 
-T,1
-R,1,-
+QRight0,_
+QSearch0L,_,<
 
-T,0
-F,0,-
+QSearch0L,0
+Q1,_,<
 
+QRight1,_
+QSearch1L,_,<
+
+QSearch1L,1
+Q1,_,<
+
+Q1,0
+QLeft0,_,<
+
+QLeft0,0
+QLeft0,0,<
+
+QLeft0,1
+QLeft0,1,<
+
+Q1,1
+QLeft1,_,<
+
+QLeft1,0
+QLeft1,0,<
+
+QLeft1,1
+QLeft1,1,<
+
+QLeft0,_
+QSearch0R,_,>
+
+QSearch0R,0
+Q0,_,>
+
+QLeft1,_
+QSearch1R,_,>
+
+QSearch1R,1
+Q0,_,>
+
+QSearch0R,1
+QReject,1,-
+
+QSearch1R,0
+QReject,0,-
+
+QSearch0L,1
+QReject,1,-
+
+QSearch1L,0
+QReject,0,-
+
+Q0,_
+QAccept,_,-
+
+Q1,_
+QAccept,_,-
+
+QSearch0L,_
+QAccept,_,-
+
+QSearch0R,_
+QAccept,_,-
+
+QSearch1L,_
+QAccept,_,-
+
+QSearch1R,_
+QAccept,_,-

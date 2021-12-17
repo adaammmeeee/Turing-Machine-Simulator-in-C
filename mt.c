@@ -4,40 +4,6 @@
 #include <string.h>
 #include "mt.h"
 
-// Initialise la structure bandeau
-void init(BANDEAU b)
-{
-    b->premier = NULL;
-    b->dernier = NULL;
-}
-
-// Ajoute une case de valeur "elem" à la fin du bandeau
-int ajout_elem(BANDEAU b, char elem)
-{
-    CARREAU new = malloc(sizeof(struct carreau));
-    if (!new)
-    {
-        return 1;
-    }
-
-    if (!b->dernier)
-    { // Le bandeau est vide
-        new->valeur = elem;
-        new->prec = NULL;
-        new->suiv = NULL;
-        b->dernier = new;
-        b->premier = new;
-    }
-    else
-    { // Bandeau pas vide
-        new->valeur = elem;
-        new->prec = b->dernier;
-        new->suiv = NULL;
-        b->dernier->suiv = new;
-        b->dernier = new;
-    }
-    return 0;
-}
 
 int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
 {
@@ -174,31 +140,36 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     return 0;
 }
 
-T *recup_transition(FILE *F, int nb_transitions)
+LISTE_TRANSI recup_transition(FILE *F, int nb_transitions)
 {
-    T *tab_transition = malloc(nb_transitions * (sizeof(struct transition)));
+    T transition;
+    LISTE_TRANSI liste_transition = malloc(sizeof(struct liste_transition));
+    init_liste_transi(liste_transition);
     for (int i = 0; i < nb_transitions; i++)
     {
-        tab_transition[i].etat_lu = malloc(10 * sizeof(char));
-        tab_transition[i].nouvel_etat = malloc(10 * sizeof(char));
+        
+        transition.etat_lu = malloc(10 * sizeof(char));
+        transition.nouvel_etat = malloc(10 * sizeof(char));
         int caractere = fgetc(F);
         while (!isupper(caractere))
         {
             caractere = fgetc(F);
         }
-        
-        tab_transition[i].etat_lu[0] = caractere;
-        
-        
-        tab_transition[i].etat_lu[1] = '\0';
 
-        caractere = fgetc(F);
+        int cpt = 0;
+        while (isalpha(caractere) || isdigit(caractere))
+        {
+            transition.etat_lu[cpt] = caractere;
+            caractere = fgetc(F);
+            cpt++;
+        }
+        transition.etat_lu[cpt] = '\0';
 
-        while (! (isdigit(caractere) || isalpha(caractere) || caractere == '_') )
+        while (!(isdigit(caractere) || isalpha(caractere) || caractere == '_'))
         {
             caractere = fgetc(F);
         }
-        tab_transition[i].caractere_lu = caractere;
+        transition.caractere_lu = caractere;
 
         caractere = fgetc(F);
 
@@ -206,8 +177,15 @@ T *recup_transition(FILE *F, int nb_transitions)
         {
             caractere = fgetc(F);
         }
-        tab_transition[i].nouvel_etat[0] = caractere;
-        tab_transition[i].nouvel_etat[1] = '\0';
+
+        cpt = 0;
+        while (isalpha(caractere) || isdigit(caractere))
+        {
+            transition.nouvel_etat[cpt] = caractere;
+            caractere = fgetc(F);
+            cpt++;
+        }
+        transition.nouvel_etat[cpt] = '\0';
 
         caractere = fgetc(F);
 
@@ -216,7 +194,7 @@ T *recup_transition(FILE *F, int nb_transitions)
 
             caractere = fgetc(F);
         }
-        tab_transition[i].nouveau_caractere = caractere;
+        transition.nouveau_caractere = caractere;
 
         caractere = fgetc(F);
 
@@ -224,9 +202,10 @@ T *recup_transition(FILE *F, int nb_transitions)
         {
             caractere = fgetc(F);
         }
-        tab_transition[i].direction = caractere;
+        transition.direction = caractere;
+        ajout_transition(liste_transition,transition);
     }
-    return tab_transition;
+    return liste_transition;
 }
 
 MT init_machine(char *nomfic, char *entree)
@@ -248,9 +227,9 @@ MT init_machine(char *nomfic, char *entree)
     fscanf(F, "name: %[^\n]\n", ma_machine->nom);
     fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
     fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
-    printf(" VOICI LA TAILLE %ld\n", strlen(ma_machine->etat_init));
-    ma_machine->etat_accepte[strlen(ma_machine->etat_accepte)-1] = '\0';
-    ma_machine->etat_init[strlen(ma_machine->etat_init)-1] = '\0';
+
+    ma_machine->etat_accepte[strlen(ma_machine->etat_accepte) - 1] = '\0';
+    ma_machine->etat_init[strlen(ma_machine->etat_init) - 1] = '\0';
 
     long position = ftell(F);
     rewind(F);
@@ -281,7 +260,8 @@ MT init_machine(char *nomfic, char *entree)
         return NULL;
     }
     fseek(F, position - 1, SEEK_SET);
-    ma_machine->tab_transitions = recup_transition(F, nb_transitions);
+    ma_machine->liste_transitions = recup_transition(F, nb_transitions);
+    affiche_transition(ma_machine);
     BANDEAU b = malloc(sizeof(struct bandeau));
     init(b);
     for (int i = 0; i < strlen(entree); i++)
@@ -290,10 +270,8 @@ MT init_machine(char *nomfic, char *entree)
     }
     ma_machine->etat_bande = b;
     strcpy(ma_machine->etat_courant, ma_machine->etat_init);
-    printf("Etat courant: %s\n", ma_machine->etat_courant);
     ma_machine->position_tete_lecture = 0;
     ma_machine->nb_transitions = nb_transitions;
-    affiche_transition(ma_machine->tab_transitions, nb_transitions);
     fclose(F);
     return ma_machine;
 }
@@ -310,18 +288,27 @@ void libere_bandeau(BANDEAU b)
     free(b);
 }
 
+void libere_liste_transi(LISTE_TRANSI liste_transition)
+{
+    while (liste_transition->premier)
+    {
+        TRANSI stock = liste_transition->premier;
+        liste_transition->premier = liste_transition->premier->suiv;
+        free(stock->ma_transition.etat_lu);
+        free(stock->ma_transition.nouvel_etat);
+        free(stock);
+    }
+    free(liste_transition->premier);
+    free(liste_transition);
+}
+
 void libere_machine(MT ma_machine)
 {
     free(ma_machine->nom);
     free(ma_machine->etat_init);
     free(ma_machine->etat_courant);
     free(ma_machine->etat_accepte);
-    for (int i = 0; i < ma_machine->nb_transitions; i++)
-    {
-        free(ma_machine->tab_transitions[i].etat_lu);
-        free(ma_machine->tab_transitions[i].nouvel_etat);
-    }
-    free(ma_machine->tab_transitions);
+    libere_liste_transi(ma_machine->liste_transitions);
     libere_bandeau(ma_machine->etat_bande);
     free(ma_machine);
 }

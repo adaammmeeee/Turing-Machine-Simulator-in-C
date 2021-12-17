@@ -1,15 +1,22 @@
 #include <stdio.h>
 #include "mt.h"
 
-
-void affiche_transition(T *tab_transition, int nb_transitions)
+void affiche_transition(MT ma_machine)
 {
-    for (int i = 0; i < nb_transitions; i++)
+    TRANSI affichage = ma_machine->liste_transitions->premier;
+    while (affichage)
     {
-        printf("%s, %c \n", tab_transition[i].etat_lu, tab_transition[i].caractere_lu);
-        printf("%s, %c, %c \n", tab_transition[i].nouvel_etat, tab_transition[i].nouveau_caractere, tab_transition[i].direction);
+        printf("%s,%c\n%s,%c,%c\n\n", 
+        affichage->ma_transition.etat_lu,
+        affichage->ma_transition.caractere_lu, 
+        affichage->ma_transition.nouvel_etat, 
+        affichage->ma_transition.nouveau_caractere,
+        affichage->ma_transition.direction);
+        affichage = affichage->suiv;
     }
 }
+
+
 
 void affiche_bandeau(BANDEAU b)
 {
