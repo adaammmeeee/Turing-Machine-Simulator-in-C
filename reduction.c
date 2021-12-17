@@ -9,14 +9,19 @@ On marque l'extremité gauche de l'entrée avec #
 
 On effectue nos transitions normalement, si on rencontre le symbole # alors on décales toute notre bande à droite
 On va donc dans un premier temps ajouter notre symbole
-puis ajouter les transitions qui permettent de se décaler 
+puis ajouter les transitions qui permettent de se décaler
 
 
 
 */
 
-int bi_inf_vers_semi_inf (FILE *F)
+int bi_inf_vers_semi_inf(FILE *F)
 {
+    MT ma_machine = init_machine("description2", "100011");
 
+    T transitions;
+    transitions.caractere_lu = "A0";
+    
 
+    // On a toute les transitions dans la liste maintenant
 }

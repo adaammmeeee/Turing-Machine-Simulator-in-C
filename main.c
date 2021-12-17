@@ -6,7 +6,7 @@ int main()
 {
     BANDEAU b = malloc(sizeof(struct bandeau));
     init(b);
-    MT ma_machine = init_machine("description", "0000000");
+    MT ma_machine = init_machine("description", "100011");
     if (ma_machine == NULL)
     {
         printf("Erreur lors de l'initialisation de la machine \n");
