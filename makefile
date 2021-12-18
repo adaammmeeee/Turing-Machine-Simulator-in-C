@@ -10,8 +10,8 @@ mt.o: mt.c mt.h
 main.o: main.c
 	gcc -Wall -g -c main.c
 
-fonctionnement.o: fonctionnement.c mt.h
-	gcc -Wall -g -c fonctionnement.c
+calcul_pas.o: calcul_pas.c mt.h
+	gcc -Wall -g -c calcul_pas.c
 
 affichage.o : affichage.c mt.h
 	gcc -Wall -g -c affichage.c
@@ -22,8 +22,8 @@ liste.o: liste.c mt.h
 reduction.o : reduction.c mt.h
 	gcc -Wall -g -c reduction.c
 
-compile: main.o mt.o fonctionnement.o affichage.o liste.o reduction.o
-	gcc -Wall -o main main.o mt.o fonctionnement.o affichage.o liste.o reduction.o
+compile: main.o mt.o calcul_pas.o affichage.o liste.o reduction.o
+	gcc -Wall -o main main.o mt.o calcul_pas.o affichage.o liste.o reduction.o
 
 clean: 
 	rm -f *.o main

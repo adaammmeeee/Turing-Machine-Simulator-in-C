@@ -28,3 +28,4 @@ void affiche_bandeau(BANDEAU b)
     }
     printf("\n");
 }
+

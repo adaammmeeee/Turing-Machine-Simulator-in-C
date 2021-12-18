@@ -55,9 +55,9 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     {
         caractere = fgetc(F);
     }
-    if (caractere != '0' && caractere != '1' && caractere != '_')
+    if (caractere != '0' && caractere != '1' && caractere != '_' && caractere != '#')
     {
-        printf("0, 1 ou _ (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
+        printf("0, 1, _  ou # (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
 
         return 3;
     }
@@ -105,9 +105,9 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     {
         caractere = fgetc(F);
     }
-    if (caractere != '0' && caractere != '1' && caractere != '_')
+    if (caractere != '0' && caractere != '1' && caractere != '_' && caractere != '#')
     {
-        printf("0, 1 ou _ (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
+        printf("0, 1, _ ou # (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
         return 3;
     }
 
@@ -139,14 +139,15 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     return 0;
 }
 
-LISTE_TRANSI recup_transition(FILE *F)
+LISTE_TRANSI recup_transition(FILE *F, int nb_transitions)
 {
     T transition;
     LISTE_TRANSI liste_transition = malloc(sizeof(struct liste_transition));
     init_liste_transi(liste_transition);
     int caractere;
-    while ((caractere = fgetc(F)) != EOF)
+    for (int i = 0; i < nb_transitions; i++)
     {
+        caractere = fgetc(F);
         transition.etat_lu = malloc(10 * sizeof(char));
         transition.nouvel_etat = malloc(10 * sizeof(char));
 
@@ -164,7 +165,7 @@ LISTE_TRANSI recup_transition(FILE *F)
         }
         transition.etat_lu[cpt] = '\0';
 
-        while (!(isdigit(caractere) || isalpha(caractere) || caractere == '_'))
+        while (!(isdigit(caractere) || isalpha(caractere) || caractere == '_' || caractere == '#'))
         {
             caractere = fgetc(F);
         }
@@ -188,7 +189,7 @@ LISTE_TRANSI recup_transition(FILE *F)
 
         caractere = fgetc(F);
 
-        while (!(isdigit(caractere) || isalpha(caractere) || caractere == '_'))
+        while (!(isdigit(caractere) || isalpha(caractere) || caractere == '_' || caractere == '#'))
         {
 
             caractere = fgetc(F);
@@ -207,6 +208,41 @@ LISTE_TRANSI recup_transition(FILE *F)
     return liste_transition;
 }
 
+void recup_tab_etats(MT ma_machine, int nb_transitions)
+{
+    char **tab_etats = malloc((nb_transitions + 1) * sizeof(char *));
+    for (int i = 0; i < nb_transitions + 1; i++)
+    {
+        tab_etats[i] = malloc(20 * sizeof(char));
+    }
+
+    TRANSI actuelle = ma_machine->liste_transitions->premier;
+    int cpt = 0;
+    
+    while (actuelle)
+    {
+        int test = 0;
+        for (int i = 0; i < cpt; i++)
+        {
+            if (!strcmp(actuelle->ma_transition.nouvel_etat, tab_etats[i]))
+            {
+                test = 1;
+            }
+        }
+        if (!test)
+        {
+            strcpy(tab_etats[cpt], actuelle->ma_transition.nouvel_etat);
+            printf("MON ETATS : %s\n", tab_etats[cpt]);
+            cpt++;
+        }
+        actuelle = actuelle->suiv;
+    }
+    strcpy(tab_etats[cpt], ma_machine->etat_init);
+    printf("On a recupéré les états\n");
+    ma_machine->tab_etats = tab_etats;
+    ma_machine->nb_etats = cpt;
+}
+
 MT init_machine(char *nomfic, char *entree)
 {
     MT ma_machine = malloc(sizeof(struct mt));
@@ -218,7 +254,7 @@ MT init_machine(char *nomfic, char *entree)
         exit(1);
     }
 
-    ma_machine->nom = malloc(20 * sizeof(char));
+    ma_machine->nom = malloc(50 * sizeof(char));
     ma_machine->etat_init = malloc(10 * sizeof(char));
     ma_machine->etat_accepte = malloc(10 * sizeof(char));
     ma_machine->etat_courant = malloc(10 * sizeof(char));
@@ -227,11 +263,9 @@ MT init_machine(char *nomfic, char *entree)
     fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
     fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
 
-    ma_machine->etat_accepte[strlen(ma_machine->etat_accepte) - 1] = '\0';
-    ma_machine->etat_init[strlen(ma_machine->etat_init) - 1] = '\0';
-    ma_machine->nom[strlen(ma_machine->nom) - 1] = '\0';
     long position = ftell(F);
     rewind(F);
+    // Retour en arrière pour compter le nombre de ligne du fichier et pouvoir gérer les erreurs
     int nb_ligne = 1;
     while (ftell(F) <= position)
     {
@@ -258,8 +292,9 @@ MT init_machine(char *nomfic, char *entree)
         fclose(F);
         return NULL;
     }
-    fseek(F, position - 1, SEEK_SET);
-    ma_machine->liste_transitions = recup_transition(F);
+    // Retour au début des transitions pour les enregistrer
+    fseek(F, position, SEEK_SET);
+    ma_machine->liste_transitions = recup_transition(F, nb_transitions);
 
     // affiche_transition(ma_machine);
     BANDEAU b = malloc(sizeof(struct bandeau));
@@ -272,6 +307,8 @@ MT init_machine(char *nomfic, char *entree)
     strcpy(ma_machine->etat_courant, ma_machine->etat_init);
     ma_machine->position_tete_lecture = 0;
     ma_machine->nb_transitions = nb_transitions;
+    recup_tab_etats(ma_machine, nb_transitions);
+
     fclose(F);
     return ma_machine;
 }
@@ -304,6 +341,12 @@ void libere_liste_transi(LISTE_TRANSI liste_transition)
 
 void libere_machine(MT ma_machine)
 {
+    for (int i = 0; i < ma_machine->nb_transitions + 1; i++)
+    {
+        free(ma_machine->tab_etats[i]);
+    }
+    free(ma_machine->tab_etats);
+
     free(ma_machine->nom);
     free(ma_machine->etat_init);
     free(ma_machine->etat_courant);
