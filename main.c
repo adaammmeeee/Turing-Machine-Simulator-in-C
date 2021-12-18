@@ -6,7 +6,7 @@ int main()
 {
     BANDEAU b = malloc(sizeof(struct bandeau));
     init(b);
-    MT ma_machine = init_machine("description", "100011");
+    MT ma_machine = init_machine("description1", "100");
     if (ma_machine == NULL)
     {
         printf("Erreur lors de l'initialisation de la machine \n");
@@ -14,7 +14,8 @@ int main()
         return 1;
     }
     CARREAU tete_lecture = ma_machine->etat_bande->premier;
-    calcul_pas(ma_machine, tete_lecture);
+    //calcul_pas(ma_machine, tete_lecture);
+    bi_inf_vers_semi_inf("description");
     libere_machine(ma_machine);
     free(b);
     return 0;

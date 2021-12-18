@@ -19,8 +19,11 @@ affichage.o : affichage.c mt.h
 liste.o: liste.c mt.h
 	gcc -Wall -g -c liste.c
 
-compile: main.o mt.o fonctionnement.o affichage.o liste.o
-	gcc -Wall -o main main.o mt.o fonctionnement.o affichage.o liste.o
+reduction.o : reduction.c mt.h
+	gcc -Wall -g -c reduction.c
+
+compile: main.o mt.o fonctionnement.o affichage.o liste.o reduction.o
+	gcc -Wall -o main main.o mt.o fonctionnement.o affichage.o liste.o reduction.o
 
 clean: 
 	rm -f *.o main

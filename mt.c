@@ -4,7 +4,6 @@
 #include <string.h>
 #include "mt.h"
 
-
 int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
 {
     int caractere = 0;
@@ -140,17 +139,17 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     return 0;
 }
 
-LISTE_TRANSI recup_transition(FILE *F, int nb_transitions)
+LISTE_TRANSI recup_transition(FILE *F)
 {
     T transition;
     LISTE_TRANSI liste_transition = malloc(sizeof(struct liste_transition));
     init_liste_transi(liste_transition);
-    for (int i = 0; i < nb_transitions; i++)
+    int caractere;
+    while ((caractere = fgetc(F)) != EOF)
     {
-        
         transition.etat_lu = malloc(10 * sizeof(char));
         transition.nouvel_etat = malloc(10 * sizeof(char));
-        int caractere = fgetc(F);
+
         while (!isupper(caractere))
         {
             caractere = fgetc(F);
@@ -203,7 +202,7 @@ LISTE_TRANSI recup_transition(FILE *F, int nb_transitions)
             caractere = fgetc(F);
         }
         transition.direction = caractere;
-        ajout_transition(liste_transition,transition);
+        ajout_transition(liste_transition, transition);
     }
     return liste_transition;
 }
@@ -230,7 +229,7 @@ MT init_machine(char *nomfic, char *entree)
 
     ma_machine->etat_accepte[strlen(ma_machine->etat_accepte) - 1] = '\0';
     ma_machine->etat_init[strlen(ma_machine->etat_init) - 1] = '\0';
-
+    ma_machine->nom[strlen(ma_machine->nom) - 1] = '\0';
     long position = ftell(F);
     rewind(F);
     int nb_ligne = 1;
@@ -260,8 +259,9 @@ MT init_machine(char *nomfic, char *entree)
         return NULL;
     }
     fseek(F, position - 1, SEEK_SET);
-    ma_machine->liste_transitions = recup_transition(F, nb_transitions);
-    affiche_transition(ma_machine);
+    ma_machine->liste_transitions = recup_transition(F);
+
+    // affiche_transition(ma_machine);
     BANDEAU b = malloc(sizeof(struct bandeau));
     init(b);
     for (int i = 0; i < strlen(entree); i++)
