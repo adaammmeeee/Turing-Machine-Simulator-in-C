@@ -19,10 +19,13 @@ puis ajouter les transitions qui permettent de se décaler
 int bi_inf_vers_semi_inf(char *nomfic)
 {
 
-    MT ma_machine = init_machine(nomfic, "");
-
+    MT ma_machine = init_machine(nomfic, "", "10#_");
+    char *nouveaunom = malloc(255 * sizeof(char)); // taille max d'un nom de fichier sur linux
+    strcpy(nouveaunom, nomfic);
+    strcat(nouveaunom, "_VsemiInfini");
     FILE *newfile = NULL;
-    newfile = fopen("VersionSemiInf", "w");
+    newfile = fopen(nouveaunom, "w");
+    free(nouveaunom);
     fprintf(newfile, "name: %s version semi infini \n", ma_machine->nom);
     fprintf(newfile, "init: Newinit\n");
     fprintf(newfile, "accept:%s\n\n\n", ma_machine->etat_accepte);
@@ -57,7 +60,7 @@ int bi_inf_vers_semi_inf(char *nomfic)
     // Maintenant pour tous les états, si on rencontre le symbole # on décale l'entrée vers la droite puis on revient dans notre état
     for (int i = 0; i < ma_machine->nb_etats; i++)
     {
-        fprintf(newfile, "%s,#\n%s2,#,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // Quand on rencontre le symbole # on passe à l'indice 2 (decalage)
+        fprintf(newfile, "%s,#\n%s2,#,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);  // Quand on rencontre le symbole # on passe à l'indice 2 (decalage)
         fprintf(newfile, "%s2,0\n%s0,_,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // Si je rencotre un 1 on passe à l'indice 1 pour le décalage (écris un 1 à la prochaine étape)
         fprintf(newfile, "%s2,1\n%s1,_,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
 

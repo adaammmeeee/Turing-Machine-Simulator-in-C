@@ -19,11 +19,14 @@ affichage.o : affichage.c mt.h
 liste.o: liste.c mt.h
 	gcc -Wall -g -c liste.c
 
-reduction.o : reduction.c mt.h
-	gcc -Wall -g -c reduction.c
+reduction_infini.o : reduction_infini.c mt.h
+	gcc -Wall -g -c reduction_infini.c
 
-compile: main.o mt.o calcul_pas.o affichage.o liste.o reduction.o
-	gcc -Wall -o main main.o mt.o calcul_pas.o affichage.o liste.o reduction.o
+reduction_abcd.o : reduction_abcd.c mt.h
+	gcc -Wall -g -c reduction_abcd.c
+
+compile: main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reduction_abcd.o
+	gcc -Wall -o main main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reduction_abcd.o
 
 clean: 
 	rm -f *.o main

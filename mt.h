@@ -53,7 +53,7 @@ struct mt
 typedef struct mt *MT;
 
 void init(BANDEAU b);
-MT init_machine(char *nomfic, char *entree);
+MT init_machine(char *nomfic, char *entree, char * alphabet);
 int ajout_elem(BANDEAU b, char elem);
 void libere_machine(MT ma_machine);
 int test_transition(FILE *f, int *nombre_de_ligne, char *alphabet);
@@ -67,3 +67,6 @@ void init_liste_transi(LISTE_TRANSI liste_transition);
 int bi_inf_vers_semi_inf(char *nomfic);
 void libere_liste_transi(LISTE_TRANSI liste_transition);
 void recup_tab_etats(MT ma_machine, int nb_transitions);
+int dans_alphabet(char * alphabet, char lettre);
+int abcd_vers_01(char *nomfic);
+

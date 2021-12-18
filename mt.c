@@ -4,6 +4,20 @@
 #include <string.h>
 #include "mt.h"
 
+int dans_alphabet(char * alphabet, char lettre)
+{
+    int bool = 0;
+    for (int i = 0; i < strlen(alphabet); i++)
+    {
+        if (lettre == alphabet[i])
+        {
+            bool = 1;
+        }
+    }
+    return bool;
+}
+
+
 int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
 {
     int caractere = 0;
@@ -55,9 +69,13 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     {
         caractere = fgetc(F);
     }
-    if (caractere != '0' && caractere != '1' && caractere != '_' && caractere != '#')
+    if (!dans_alphabet(alphabet, caractere))
     {
-        printf("0, 1, _  ou # (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
+        for (int i = 0; i <strlen(alphabet); i++)
+        {
+            printf("%c  ",alphabet[i]);
+        }
+        printf("(alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
 
         return 3;
     }
@@ -105,9 +123,14 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     {
         caractere = fgetc(F);
     }
-    if (caractere != '0' && caractere != '1' && caractere != '_' && caractere != '#')
+    if (!dans_alphabet(alphabet, caractere))
     {
-        printf("0, 1, _ ou # (alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
+        for (int i = 0; i <strlen(alphabet); i++)
+        {
+            printf("%c  ",alphabet[i]);
+        }
+        printf("(alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
+
         return 3;
     }
 
@@ -243,7 +266,7 @@ void recup_tab_etats(MT ma_machine, int nb_transitions)
     ma_machine->nb_etats = cpt;
 }
 
-MT init_machine(char *nomfic, char *entree)
+MT init_machine(char *nomfic, char *entree, char * alphabet)
 {
     MT ma_machine = malloc(sizeof(struct mt));
 
@@ -275,12 +298,13 @@ MT init_machine(char *nomfic, char *entree)
         }
     }
 
-    int retour = test_transition(F, &nb_ligne, "");
+    // Gestion d'erreur
+    int retour = test_transition(F, &nb_ligne, alphabet);
     int nb_transitions = 0;
     while (!retour)
     {
         nb_transitions++;
-        retour = test_transition(F, &nb_ligne, "");
+        retour = test_transition(F, &nb_ligne, alphabet);
     }
     if (retour != 5) // Si on n'a pas atteint la fin du fichier
     {
