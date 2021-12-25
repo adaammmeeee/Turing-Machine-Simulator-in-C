@@ -3,23 +3,16 @@ init: A
 accept:F
 
 A,a
-D,a,>
-
-A,b
 D,b,>
 
 A,c
 D,c,>
 
-A,d
-D,d,>
-
 D,a
-D,a,>
-
-D,b
 D,b,>
 
+D,b
+D,a,>
 
 D,c
 D,c,>
@@ -27,5 +20,6 @@ D,c,>
 D,d
 D,d,>
 
+
 D,_
-F,a,-
+F,a,<

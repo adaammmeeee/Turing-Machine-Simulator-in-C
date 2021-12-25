@@ -6,10 +6,9 @@ int main()
 {
     //bi_inf_vers_semi_inf("test_double_semi");
     //MT ma_machine = init_machine("test_double_semi_VsemiInfini", "1001", "10_#");
-
-    MT ma_machine = init_machine("test_abcd_binaire", "aabbdc", "abcd_#");
     abcd_vers_01("test_abcd_binaire");
 
+    MT ma_machine = init_machine("test_abcd_binaire_Vabcd", "1011010010", "01_#");
 
     if (ma_machine == NULL)
     {
