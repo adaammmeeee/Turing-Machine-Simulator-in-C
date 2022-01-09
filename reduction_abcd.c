@@ -4,6 +4,15 @@
 #include <ctype.h>
 #include "mt.h"
 
+/*
+Pour chaque état on effectue une reconnaissance, 
+On parcourt les deux case suivantes puis on enregistre le nom de la lettre
+On retourne ensuite à la position initiale et dans l'état de base avec le nom de la lettre concatennée
+ex : on est dans l'état Q, on reconnait un "a", on retourne à la position avant reconnaissance et on va dans l'état QA
+
+*/
+
+
 int abcd_vers_01(char *nomfic)
 {
     MT ma_machine = init_machine(nomfic, "", "abcd_#");
@@ -22,13 +31,13 @@ int abcd_vers_01(char *nomfic)
     {
         if (strcmp(ma_machine->tab_etats[i], ma_machine->etat_accepte))
         {
-            fprintf(newfile, "%s,0\n%s0,0,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
-            fprintf(newfile, "%s0,0\n%sA,0,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
-            fprintf(newfile, "%s0,1\n%sB,1,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
+            fprintf(newfile, "%s,0\n%s0,0,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // On lit 0 sur la première case
+            fprintf(newfile, "%s0,0\n%sA,0,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // On lit  0 donc la lettre est "a"
+            fprintf(newfile, "%s0,1\n%sB,1,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // On lit 1 donc la lettre est "b"
 
-            fprintf(newfile, "%s,1\n%s1,1,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
-            fprintf(newfile, "%s1,0\n%sC,0,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
-            fprintf(newfile, "%s1,1\n%sD,1,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
+            fprintf(newfile, "%s,1\n%s1,1,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // On lit 1 sur la première case
+            fprintf(newfile, "%s1,0\n%sC,0,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);// On lit 0 donc la lettre est "c"
+            fprintf(newfile, "%s1,1\n%sD,1,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);// On lit 1 donc la lettre est "d"
 
             fprintf(newfile, "%s,_\n%sN,_,-\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
         }

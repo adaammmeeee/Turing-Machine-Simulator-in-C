@@ -20,7 +20,7 @@ int bi_inf_vers_semi_inf(char *nomfic)
 {
 
     MT ma_machine = init_machine(nomfic, "", "10#_");
-    char *nouveaunom = malloc(255 * sizeof(char)); // taille max d'un nom de fichier sur linux
+    char * nouveaunom = malloc(255 * sizeof(char)); // taille max d'un nom de fichier sur linux
     strcpy(nouveaunom, nomfic);
     strcat(nouveaunom, "_VsemiInfini");
     FILE *newfile = NULL;

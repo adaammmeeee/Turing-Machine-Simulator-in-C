@@ -1,8 +1,8 @@
 run: compile
-	./main
+	./main 1
 
 debug: compile
-	valgrind --leak-check=full ./main
+	valgrind --leak-check=full ./main 1
 
 mt.o: mt.c mt.h
 	gcc -Wall -g -c mt.c
@@ -29,4 +29,4 @@ compile: main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reducti
 	gcc -Wall -o main main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reduction_abcd.o
 
 clean: 
-	rm -f *.o main
+	rm -f *.o *_Vabcd *_VsemiInfini main
