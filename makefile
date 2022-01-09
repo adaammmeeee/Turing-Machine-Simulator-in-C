@@ -1,6 +1,12 @@
 run: compile
 	./main 1
 
+test: compile
+	./main 2
+
+test1: compile
+	./main 3
+
 debug: compile
 	valgrind --leak-check=full ./main 1
 

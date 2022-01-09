@@ -27,7 +27,7 @@ int bi_inf_vers_semi_inf(char *nomfic)
     newfile = fopen(nouveaunom, "w");
     free(nouveaunom);
     fprintf(newfile, "name: %s version semi infini \n", ma_machine->nom);
-    fprintf(newfile, "init: Newinit\n");
+    fprintf(newfile, "init: Newinit\n"); // On ajoute un nouvel état initial pour écrire le # au debut de la bande et faire le premier décalage
     fprintf(newfile, "accept:%s\n\n\n", ma_machine->etat_accepte);
 
     TRANSI affichage = ma_machine->liste_transitions->premier;
@@ -63,7 +63,8 @@ int bi_inf_vers_semi_inf(char *nomfic)
         fprintf(newfile, "%s,#\n%s2,#,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);  // Quand on rencontre le symbole # on passe à l'indice 2 (decalage)
         fprintf(newfile, "%s2,0\n%s0,_,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // Si je rencotre un 1 on passe à l'indice 1 pour le décalage (écris un 1 à la prochaine étape)
         fprintf(newfile, "%s2,1\n%s1,_,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
-
+        // Lorsque l'on a un indice 2 à la fin d'un état c'est le début d'un décalage
+        // Lorsque l'on a un indice 0 ou 1 à la fin de l'état, c'est un état qui gère les décalage
         fprintf(newfile, "%s0,0\n%s0,0,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
         fprintf(newfile, "%s0,1\n%s1,0,>\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]);
         fprintf(newfile, "%s0,_\n%s3,0,<\n\n", ma_machine->tab_etats[i], ma_machine->tab_etats[i]); // Fin du decalage on passe à l'indice 3 (retour à l'état de départ avec une bande cette fois-ci décalé)

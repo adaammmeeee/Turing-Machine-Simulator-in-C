@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 
         case 2:
             abcd_vers_01(nomfic);
-            MT ma_machine1 = init_machine(strcat(nomfic, "_Vabcd"), input , "01_#");
+            MT ma_machine1 = init_machine(strcat(nomfic, "_Vabcd"), input, "01_#");
             if (ma_machine1 == NULL)
             {
                 printf("Erreur lors de l'initialisation de la machine \n");
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
         case 3:
             bi_inf_vers_semi_inf(nomfic);
-            MT ma_machine2 = init_machine(strcat(nomfic, "_VsemiInfini"), input , "01_#");
+            MT ma_machine2 = init_machine(strcat(nomfic, "_VsemiInfini"), input, "01_#");
             if (ma_machine2 == NULL)
             {
                 printf("Erreur lors de l'initialisation de la machine \n");
@@ -75,13 +75,26 @@ int main(int argc, char **argv)
             calcul_pas(ma_machine2, ma_machine2->etat_bande->premier);
             libere_machine(ma_machine2);
             break;
-
         }
 
         break;
 
     case 2:;
-        MT ma_machine = init_machine("palindrome", "10001", "01_#");
+        MT ma_machine3 = init_machine("palindrome", "10001", "01_#");
+        if (ma_machine3 == NULL)
+        {
+            printf("Erreur lors de l'initialisation de la machine \n");
+            return 1;
+        }
+        calcul_pas(ma_machine3, ma_machine3->etat_bande->premier);
+        libere_machine(ma_machine3);
+        break;
+
+    case 3:
+        abcd_vers_01("test_abcd_binaire");
+
+        MT ma_machine = init_machine("test_abcd_binaire_Vabcd", "1011010010", "01_#");
+
         if (ma_machine == NULL)
         {
             printf("Erreur lors de l'initialisation de la machine \n");
@@ -89,9 +102,7 @@ int main(int argc, char **argv)
         }
         calcul_pas(ma_machine, ma_machine->etat_bande->premier);
         libere_machine(ma_machine);
-        break;
 
-    case 3:
         break;
     }
     /*
