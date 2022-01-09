@@ -65,7 +65,17 @@ int main(int argc, char **argv)
             break;
 
         case 3:
+            bi_inf_vers_semi_inf(nomfic);
+            MT ma_machine2 = init_machine(strcat(nomfic, "_VsemiInfini"), input , "01_#");
+            if (ma_machine2 == NULL)
+            {
+                printf("Erreur lors de l'initialisation de la machine \n");
+                return 2;
+            }
+            calcul_pas(ma_machine2, ma_machine2->etat_bande->premier);
+            libere_machine(ma_machine2);
             break;
+
         }
 
         break;
