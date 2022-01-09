@@ -4,7 +4,8 @@
 #include <string.h>
 #include "mt.h"
 
-int dans_alphabet(char * alphabet, char lettre)
+// Si lettre est contenue dans le char * alphabet alors renvoie 1 sinon 0
+int dans_alphabet(char *alphabet, char lettre)
 {
     int bool = 0;
     for (int i = 0; i < strlen(alphabet); i++)
@@ -17,7 +18,7 @@ int dans_alphabet(char * alphabet, char lettre)
     return bool;
 }
 
-
+// Gestion d'erreur vérifie que la syntaxe du fichier F est la bonne renvoie 0 si tout est bon
 int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
 {
     int caractere = 0;
@@ -71,9 +72,9 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     }
     if (!dans_alphabet(alphabet, caractere))
     {
-        for (int i = 0; i <strlen(alphabet); i++)
+        for (int i = 0; i < strlen(alphabet); i++)
         {
-            printf("%c  ",alphabet[i]);
+            printf("%c  ", alphabet[i]);
         }
         printf("(alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
 
@@ -117,7 +118,7 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
         return 2;
     }
 
-    // Maintenant on cherche le caractère qui remplacera
+    // Maintenant on cherche le caractère qui remplacera le caractère actuel
     caractere = fgetc(F);
     while (caractere == ' ')
     {
@@ -125,9 +126,9 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     }
     if (!dans_alphabet(alphabet, caractere))
     {
-        for (int i = 0; i <strlen(alphabet); i++)
+        for (int i = 0; i < strlen(alphabet); i++)
         {
-            printf("%c  ",alphabet[i]);
+            printf("%c  ", alphabet[i]);
         }
         printf("(alphabet de travail) attendu à la ligne %d\n", *nombre_de_ligne);
 
@@ -162,6 +163,7 @@ int test_transition(FILE *F, int *nombre_de_ligne, char *alphabet)
     return 0;
 }
 
+// Parcourt le fichier et récupère les transition en les stockant dans la strcuture adéquate LISTE_TRANSI
 LISTE_TRANSI recup_transition(FILE *F, int nb_transitions)
 {
     T transition;
@@ -231,6 +233,7 @@ LISTE_TRANSI recup_transition(FILE *F, int nb_transitions)
     return liste_transition;
 }
 
+// Récupère les états à partir des transitions enregistrées dans "ma_machine"
 void recup_tab_etats(MT ma_machine, int nb_transitions)
 {
     char **tab_etats = malloc((nb_transitions + 1) * sizeof(char *));
@@ -241,7 +244,7 @@ void recup_tab_etats(MT ma_machine, int nb_transitions)
 
     TRANSI actuelle = ma_machine->liste_transitions->premier;
     int cpt = 0;
-    
+    // On parcourt les nouveaux état, si ils ne sont pas déjà présent dans notre tableau d'état on les ajoutes
     while (actuelle)
     {
         int test = 0;
@@ -255,18 +258,32 @@ void recup_tab_etats(MT ma_machine, int nb_transitions)
         if (!test)
         {
             strcpy(tab_etats[cpt], actuelle->ma_transition.nouvel_etat);
-            printf("MON ETATS : %s\n", tab_etats[cpt]);
             cpt++;
         }
         actuelle = actuelle->suiv;
     }
-    strcpy(tab_etats[cpt], ma_machine->etat_init);
+    // Si l'état initiale n'est jamais un nouvel état on l'ajoute à notre tableau 
+    int test = 0;
+    
+    for (int i = 0; i < cpt; i++)
+    {
+        if (!strcmp(ma_machine->etat_init, tab_etats[i]))
+        {
+            test = 1;
+        }
+    }
+    if (!test)
+    {
+        strcpy(tab_etats[cpt], ma_machine->etat_init);
+        cpt++;
+    }
     printf("On a recupéré les états\n");
     ma_machine->tab_etats = tab_etats;
     ma_machine->nb_etats = cpt;
 }
 
-MT init_machine(char *nomfic, char *entree, char * alphabet)
+// Renvoie une MT initialisée à partir de son code donné dans le fichier nomfic, avec son entrée "entree" et respectant l'alphabet "alphabet"
+MT init_machine(char *nomfic, char *entree, char *alphabet)
 {
     MT ma_machine = malloc(sizeof(struct mt));
 
@@ -298,7 +315,7 @@ MT init_machine(char *nomfic, char *entree, char * alphabet)
         }
     }
 
-    // Gestion d'erreur
+    // Gestion d'erreurs
     int retour = test_transition(F, &nb_ligne, alphabet);
     int nb_transitions = 0;
     while (!retour)

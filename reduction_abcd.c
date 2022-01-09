@@ -6,29 +6,33 @@
 
 /*
 Pour chaque état on effectue une reconnaissance, 
-On parcourt les deux case suivantes puis on enregistre le nom de la lettre
-On retourne ensuite à la position initiale et dans l'état de base avec le nom de la lettre concatennée
+On parcourt les deux cases suivantes puis on enregistre le nom de la lettre
+On retourne ensuite à la position initiale et dans l'état de base avec le nom de la lettre concaténnée
 ex : on est dans l'état Q, on reconnait un "a", on retourne à la position avant reconnaissance et on va dans l'état QA
-Ensuite en traduit les transitions du fichier initiale
+Ensuite on traduit les transitions du fichier initial
 Pour chaque transition on récupère le caractère lu et écrit ainsi que le déplacement et on le remplace par une equivalence avec un alphabet en binaire
 */
 
-
+// Ecrit dans un fichier (nomfic_Vbinaire) la transformation d'une MT ayant un alphabet {a,b,c,d} en MT qui a un alphabet {0,1} (00 pour a, 01 pour b, 10 pour c, 11 pour d)
 int abcd_vers_01(char *nomfic)
 {
     MT ma_machine = init_machine(nomfic, "", "abcd_#");
     char *nouveaunom = malloc(255 * sizeof(char)); // taille max d'un nom de fichier sur linux
     strcpy(nouveaunom, nomfic);
-    strcat(nouveaunom, "_Vabcd");
+    strcat(nouveaunom, "_Vbinaire");
     FILE *newfile = NULL;
     newfile = fopen(nouveaunom, "w");
+    if ( newfile == NULL ) {
+        printf( "Cannot open file %s\n", nouveaunom );
+        return 1;
+    }
     free(nouveaunom);
     fprintf(newfile, "name: %s version binaire \n", ma_machine->nom);
     fprintf(newfile, "init: %s\n", ma_machine->etat_init);
     fprintf(newfile, "accept:%s\n\n\n", ma_machine->etat_accepte);
     TRANSI actuelle = ma_machine->liste_transitions->premier;
 
-    for (int i = 0; i <= ma_machine->nb_etats; i++) // Dans un premier temps, pour chaque état on va reconnaitre la lettre
+    for (int i = 0; i < ma_machine->nb_etats; i++) // Dans un premier temps, pour chaque état on va reconnaitre la lettre
     {
         if (strcmp(ma_machine->tab_etats[i], ma_machine->etat_accepte))
         {

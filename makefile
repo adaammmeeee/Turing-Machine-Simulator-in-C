@@ -31,8 +31,12 @@ reduction_infini.o : reduction_infini.c mt.h
 reduction_abcd.o : reduction_abcd.c mt.h
 	gcc -Wall -g -c reduction_abcd.c
 
-compile: main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reduction_abcd.o
-	gcc -Wall -o main main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reduction_abcd.o
+optimisation.o : optimisation.c mt.h
+	gcc -Wall -g -c optimisation.c
+
+
+compile: main.o mt.o calcul_pas.o affichage.o liste.o reduction_infini.o reduction_abcd.o optimisation.o
+	gcc -Wall -o main *.o
 
 clean: 
-	rm -f *.o *_Vabcd *_VsemiInfini main
+	rm -f *.o *_Vbinaire *_VsemiInfini main

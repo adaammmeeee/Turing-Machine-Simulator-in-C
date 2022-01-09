@@ -1,0 +1,19 @@
+name:+1 en binaire
+init:A
+accept:Z
+
+A,0
+A,0,>
+
+A,1
+A,1,>
+
+A,_
+B,_,<
+
+
+B,1
+B,0,<
+
+B,0
+Z,1,-

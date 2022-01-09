@@ -1,5 +1,5 @@
-name: Test
-init: A
+name:  test_abcd
+init:A
 accept:F
 
 A,a
@@ -11,9 +11,8 @@ D,c,>
 A,c
 D,d,>
 
-A,d 
-D,a,>  
-
+A,d
+D,a,>
 
 D,a
 D,b,>
@@ -26,7 +25,6 @@ D,d,>
 
 D,d
 D,a,>
-
 
 D,_
 F,a,<
