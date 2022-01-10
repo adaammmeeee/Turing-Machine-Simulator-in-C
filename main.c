@@ -18,6 +18,8 @@ int main(int argc, char **argv)
 
     "3" -> Deuxième make test, simule 2 machines, une qui a pour alphabet abcd et l'autre un ruban bi-infini
 
+    "4" -> Troisième make test, simule une machine et l'optimise
+
     */
 
     switch (atoi(argv[1]))
@@ -32,7 +34,7 @@ int main(int argc, char **argv)
             return 1;
         }
         printf("Entrez 1 si votre MT est dispose d'un ruban infini vers la droite\n");
-        printf("Entrez 2 si votre MT a un alphabet qui travaille sur abcd (écrire l'entrée en binaire\n");
+        printf("Entrez 2 si votre MT a un alphabet qui travaille sur abcd (écrire l'entrée en binaire)\n");
         printf("Entrez 3 si votre MT a un ruban bi-infini\n");
         int choix = 0;
         scanf("%d", &choix);
@@ -136,6 +138,28 @@ int main(int argc, char **argv)
 
         calcul_pas(ma_machine, ma_machine->etat_bande->premier);
         libere_machine(ma_machine);
+        break;
+
+    case 4:;
+        MT ma_machine4 = init_machine("opti_test", "01", "01_#");
+        if (ma_machine4 == NULL)
+        {
+            printf("Erreur lors de l'initialisation de la machine \n");
+            return 2;
+        }
+        printf("Avant optimisation équivalence transition: \n");
+        affiche_transition(ma_machine4);
+        remplace_suite_transition(ma_machine4);
+        printf("Après optimisation équivalence transition: \n");
+        affiche_transition(ma_machine4);
+
+        printf("Avant optimisation code mort : \n");
+        affiche_transition(ma_machine4);
+        code_mort(ma_machine4);
+        printf("Après optimisation code mort : \n");
+
+        affiche_transition(ma_machine4);
+        libere_machine(ma_machine4);
         break;
     }
 

@@ -69,4 +69,7 @@ void libere_liste_transi(LISTE_TRANSI liste_transition);
 void recup_tab_etats(MT ma_machine, int nb_transitions);
 int dans_alphabet(char * alphabet, char lettre);
 int abcd_vers_01(char *nomfic);
+int remplace_suite_transition(MT ma_machine);
+int code_mort(MT ma_machine);
+
 

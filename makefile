@@ -7,6 +7,9 @@ test: compile
 test1: compile
 	./main 3
 
+test2: compile
+	valgrind --leak-check=full ./main 4
+
 debug: compile
 	valgrind --leak-check=full ./main 1
 

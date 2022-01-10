@@ -299,9 +299,9 @@ MT init_machine(char *nomfic, char *entree, char *alphabet)
     ma_machine->etat_accepte = malloc(10 * sizeof(char));
     ma_machine->etat_courant = malloc(10 * sizeof(char));
 
-    fscanf(F, "name: %[^\n]\n", ma_machine->nom);
-    fscanf(F, "init: %[^\n]\n", ma_machine->etat_init);
-    fscanf(F, "accept: %[^\n]", ma_machine->etat_accepte);
+    fscanf(F, "name : %[^\n]\n", ma_machine->nom);
+    fscanf(F, "init : %[^\n]\n", ma_machine->etat_init);
+    fscanf(F, "accept : %[^\n]", ma_machine->etat_accepte);
 
     long position = ftell(F);
     rewind(F);

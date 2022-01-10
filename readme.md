@@ -8,7 +8,7 @@ Pour le code de la MT:
 - l'alphabet d'entrée est {0,1}
 - l'alphabet de travail est {0,1,#,_}
 
-La syntaxe est la même que sur le site https://turingmachinesimulator.com/
+La syntaxe est la même que sur le site https://turingmachinesimulator.com/ 
 Nous avons implémenté une gestion d'erreur concernant la syntaxe d'une MT dans un fichier, par exemple manque de virgule, alphabet non reconnu etc...
 
 Exécution du code :
@@ -28,4 +28,11 @@ make test1 : Convertit dans un autre fichier une MT utilisant une ruban bi infin
              premier fichier (test_bi_infini) : ajoute 111 à gauche et à droite de l'entrée si on a que des 0 en entrée
              second fichier (test_abcd) : 'a' devient 'b', 'b' devient 'c', 'c' devient 'd', 'd' devient 'a', puis place un 'a' à droite de l'entrée 0011011011 (adbcd)
 
+make test2 : Enregistre dans une structure le code de la MT du fichier opti_test puis l'optimise.
+             fichier : opti_test
+
 make debug : exécute le mode interactif avec l'outil valgrind.
+
+Dans le fichier optimisation.c nous avons une fonction nous permettant d'optimiser une MT avant son execution.
+
+
